@@ -1,0 +1,6 @@
+THUAT TOAN A*
+Thu tu dinh kham pha:
+S -> B -> G
+
+Duong di tu S den G:
+S -> B -> G

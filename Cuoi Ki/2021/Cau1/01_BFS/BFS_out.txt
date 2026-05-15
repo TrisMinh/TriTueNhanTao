@@ -1,0 +1,22 @@
+Tap dinh V:
+['S', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H']
+
+Tap canh E:
+[('S', 'A'), ('S', 'B'), ('S', 'C'), ('A', 'B'), ('A', 'D'), ('B', 'C'), ('B', 'D'), ('B', 'F'), ('B', 'G'), ('C', 'F'), ('D', 'E'), ('E', 'F'), ('E', 'G'), ('F', 'H'), ('G', 'H')]
+
+Danh sach ke:
+S: A, B, C
+A: S, B, D
+B: S, A, C, D, F, G
+C: S, B, F
+D: A, B, E
+E: D, F, G
+F: B, C, E, H
+G: B, E, H
+H: F, G
+
+Thu tu dinh kham pha:
+S -> A -> B -> C -> D -> F -> G
+
+Duong di tu S den G:
+S -> B -> G

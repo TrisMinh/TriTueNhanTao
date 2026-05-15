@@ -1,8 +1,8 @@
 from pathlib import Path
+import csv
 
 import matplotlib.pyplot as plt
 import numpy as np
-import pandas as pd
 
 
 def euclidean_distance(point_a, point_b):
@@ -48,6 +48,11 @@ def compute_wcss(X, labels, centroids):
 
 
 def kmeans(X, k, max_iters=100, random_state=42):
+    if k <= 0:
+        raise ValueError("k phai lon hon 0")
+    if k > len(X):
+        raise ValueError("k khong duoc lon hon so diem du lieu")
+
     rng = np.random.default_rng(random_state)
     centroids = initialize_centroids(X, k, rng)
 
@@ -110,9 +115,34 @@ def find_data_file():
 
 
 def load_country_data(file_path):
-    data = pd.read_csv(file_path)
-    X = data[["Longitude", "Latitude"]].values
-    return data, X
+    rows = []
+
+    with open(file_path, newline="", encoding="utf-8-sig") as f:
+        reader = csv.DictReader(f)
+
+        for row in reader:
+            row["Longitude"] = float(row["Longitude"])
+            row["Latitude"] = float(row["Latitude"])
+            rows.append(row)
+
+    X = np.array([[row["Longitude"], row["Latitude"]] for row in rows], dtype=float)
+    return rows, X
+
+
+def save_clustered_csv(rows, labels, output_file):
+    fieldnames = list(rows[0].keys())
+
+    if "Cluster" not in fieldnames:
+        fieldnames.append("Cluster")
+
+    with open(output_file, "w", newline="", encoding="utf-8-sig") as f:
+        writer = csv.DictWriter(f, fieldnames=fieldnames)
+        writer.writeheader()
+
+        for row, label in zip(rows, labels):
+            output_row = row.copy()
+            output_row["Cluster"] = int(label)
+            writer.writerow(output_row)
 
 
 def save_elbow_chart(k_values, wcss_values, output_file):
@@ -159,7 +189,15 @@ def print_cluster_summary(data, centroids, labels):
 
     print()
     print("20 DONG DU LIEU DA PHAN CUM DAU TIEN")
-    print(data[["name", "Longitude", "Latitude", "Cluster"]].head(20).to_string(index=False))
+    print(f"{'name':>25} {'Longitude':>12} {'Latitude':>12} {'Cluster':>8}")
+
+    for row, label in zip(data[:20], labels[:20]):
+        print(
+            f"{row['name']:>25} "
+            f"{row['Longitude']:>12.6f} "
+            f"{row['Latitude']:>12.6f} "
+            f"{int(label):>8}"
+        )
 
 
 def main():
@@ -171,9 +209,8 @@ def main():
     elbow_results = elbow_method(X, k_values)
     wcss_values = [item[3] for item in elbow_results]
 
-    chosen_k = 5
+    chosen_k = 3
     centroids, labels, wcss = run_kmeans_best_of_n(X, chosen_k)
-    data["Cluster"] = labels
 
     elbow_image = current_dir / "cau3_elbow.png"
     cluster_image = current_dir / "cau3_clusters.png"
@@ -181,7 +218,7 @@ def main():
 
     save_elbow_chart(k_values, wcss_values, elbow_image)
     save_cluster_chart(X, labels, centroids, cluster_image)
-    data.to_csv(output_csv, index=False)
+    save_clustered_csv(data, labels, output_csv)
 
     print(f"File du lieu: {data_file}")
     print_elbow_results(elbow_results)

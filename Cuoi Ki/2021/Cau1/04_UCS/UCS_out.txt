@@ -1,0 +1,6 @@
+THUAT TOAN UCS
+Thu tu dinh kham pha:
+S -> A -> B -> C -> D -> F -> G
+
+Duong di tu S den G:
+S -> B -> G

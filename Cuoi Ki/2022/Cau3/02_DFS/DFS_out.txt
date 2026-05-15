@@ -1,0 +1,19 @@
+THUAT TOAN DFS
+Thu tu dinh kham pha:
+S -> A -> D -> M
+
+Bang trang thai:
++------+-----------------+---------+----------+-----------------+
+| Buoc | Stack truoc     | Lay ra  | Them vao | Stack sau       |
++------+-----------------+---------+----------+-----------------+
+| 1    | [S]             | S(h=10) | C, B, A  | [C, B, A]       |
+| 2    | [C, B, A]       | A(h=9)  | E, D     | [C, B, E, D]    |
+| 3    | [C, B, E, D]    | D(h=6)  | N, M     | [C, B, E, N, M] |
+| 4    | [C, B, E, N, M] | M(h=0)  | Khong co | [C, B, E, N]    |
++------+-----------------+---------+----------+-----------------+
+Dung khi lay ra dinh co h = 0.
+
+Dinh dich tim duoc: M
+Tong chi phi duong di: 16
+Duong di tu S den dinh co h = 0:
+S -> A -> D -> M

@@ -1,0 +1,9 @@
+So trang thai da xet: 41
+So thao tac: 7
+1. Chuyen/Muc 7 lit nuoc tu bo song qua gao 1 (Gao 1: 7 lit, Gao 2: 0 lit, Gao 3: 0 lit, Be: 0 lit)
+2. Chuyen/Muc 7 lit nuoc tu gao 1 qua be (Gao 1: 0 lit, Gao 2: 0 lit, Gao 3: 0 lit, Be: 7 lit)
+3. Chuyen/Muc 7 lit nuoc tu bo song qua gao 1 (Gao 1: 7 lit, Gao 2: 0 lit, Gao 3: 0 lit, Be: 7 lit)
+4. Chuyen/Muc 8 lit nuoc tu bo song qua gao 2 (Gao 1: 7 lit, Gao 2: 8 lit, Gao 3: 0 lit, Be: 7 lit)
+5. Chuyen/Muc 7 lit nuoc tu gao 1 qua gao 3 (Gao 1: 0 lit, Gao 2: 8 lit, Gao 3: 7 lit, Be: 7 lit)
+6. Chuyen/Muc 2 lit nuoc tu gao 2 qua gao 3 (Gao 1: 0 lit, Gao 2: 6 lit, Gao 3: 9 lit, Be: 7 lit)
+7. Chuyen/Muc 6 lit nuoc tu gao 2 qua be (Gao 1: 0 lit, Gao 2: 0 lit, Gao 3: 9 lit, Be: 13 lit)

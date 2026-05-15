@@ -1,0 +1,6 @@
+THUAT TOAN DFS
+Thu tu dinh kham pha:
+S -> A -> D -> E -> F -> H -> G
+
+Duong di tu S den G:
+S -> A -> D -> E -> G
