@@ -14,7 +14,7 @@ Em đã cài đặt 3 mô hình phân loại hoa Iris:
 |---|---|---|---:|---|
 | Neural Network | `01_Neural_Network` | `4 -> 8 -> 3` | 97.33% | Mô hình chính, kết quả tốt nhất |
 | Softmax Logistic Regression | `02_Softmax_Logistic_Regression` | `4 -> 3` | 94.67% | Logistic đa lớp, dễ giải thích |
-| Multiclass Perceptron | `03_Multiclass_Perceptron` | `4 -> 3` | 96.00% | Cập nhật khi dự đoán sai |
+| Multiclass Perceptron | `03_Multiclass_Perceptron` | `4 -> 3` | 95.56% | Cập nhật khi dự đoán sai |
 
 ## Đối chiếu yêu cầu đề bài
 

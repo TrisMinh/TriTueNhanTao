@@ -109,7 +109,7 @@ Kiến trúc:
 
 Hình minh họa kiến trúc mô hình:
 
-![Kiến trúc Softmax Logistic Regression 4-3](softmax_architecture.png)
+![Kiến trúc Softmax Logistic Regression 4-3](softmax_logistic_architecture.png)
 
 Ý nghĩa hình:
 
@@ -637,7 +637,7 @@ Kết quả:
 ```text
 SOFTMAX LOGISTIC REGRESSION
 Kien truc: 4 -> 3
-Loss cuoi: 0.094787
+Loss cuoi: 0.096295
 Accuracy train: 94.67%
 ```
 
@@ -690,7 +690,7 @@ Softmax Logistic Regression là mô hình tuyến tính, dễ cài đặt và d�
 
 ```text
 Accuracy train = 94.67%
-Loss cuối = 0.094787
+Loss cuối = 0.096295
 ```
 
 Kết quả thấp hơn Neural Network vì Softmax Logistic Regression không có tầng ẩn, nên khả năng học quan hệ phức tạp kém hơn.

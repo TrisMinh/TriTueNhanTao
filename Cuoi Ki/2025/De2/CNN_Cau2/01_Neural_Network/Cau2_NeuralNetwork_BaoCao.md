@@ -91,7 +91,7 @@ Kiến trúc tổng quát:
 
 Hình minh họa kiến trúc mạng:
 
-![Kiến trúc Neural Network 4-8-3](nn_architecture.png)
+![Kiến trúc Neural Network 4-8-3](nn_architecture_v2.png)
 
 Ý nghĩa hình:
 

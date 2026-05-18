@@ -109,7 +109,7 @@ Kiến trúc:
 
 Hình minh họa kiến trúc mô hình:
 
-![Kiến trúc Softmax Logistic Regression 4-3](softmax_architecture.png)
+![Kiến trúc Softmax Logistic Regression 4-3](softmax_logistic_architecture.png)
 
 Ý nghĩa hình:
 

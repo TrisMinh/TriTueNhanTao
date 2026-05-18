@@ -95,7 +95,7 @@ Kiến trúc:
 
 Hình minh họa kiến trúc mô hình:
 
-![Kiến trúc Multiclass Perceptron 4-3](perceptron_architecture.png)
+![Kiến trúc Multiclass Perceptron 4-3](perceptron_architecture_v2.png)
 
 Ý nghĩa hình:
 
@@ -604,8 +604,8 @@ Kết quả:
 ```text
 MULTICLASS PERCEPTRON
 Kien truc: 4 -> 3
-So loi epoch cuoi duoc ghi nhan: 4
-Accuracy train: 96.00%
+So loi epoch cuoi duoc ghi nhan: 12
+Accuracy train: 95.56%
 ```
 
 ### Trả lời: Dán kết quả nhãn ứng với 30 mẫu dữ liệu
@@ -658,8 +658,8 @@ Multiclass Perceptron là mô hình tuyến tính đơn giản, học bằng cá
 Kết quả:
 
 ```text
-Accuracy train = 96.00%
-Số lỗi epoch cuối được ghi nhận = 4
+Accuracy train = 95.56%
+Số lỗi epoch cuối được ghi nhận = 12
 ```
 
 Mô hình đạt kết quả tốt hơn Softmax Logistic Regression trên tập huấn luyện này, nhưng vẫn kém Neural Network vì không có tầng ẩn để học quan hệ phi tuyến.

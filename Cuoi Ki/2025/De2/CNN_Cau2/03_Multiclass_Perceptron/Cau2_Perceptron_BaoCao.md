@@ -95,7 +95,7 @@ Kiến trúc:
 
 Hình minh họa kiến trúc mô hình:
 
-![Kiến trúc Multiclass Perceptron 4-3](perceptron_architecture.png)
+![Kiến trúc Multiclass Perceptron 4-3](perceptron_architecture_v2.png)
 
 Ý nghĩa hình:
 
