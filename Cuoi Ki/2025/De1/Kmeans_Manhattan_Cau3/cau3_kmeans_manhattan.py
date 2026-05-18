@@ -230,9 +230,9 @@ def main():
     print_elbow_results(elbow_results)
     print_cluster_summary(data, centroids, labels)
     print()
-    print(f"Da luu bieu do elbow: {elbow_image}")
-    print(f"Da luu bieu do phan cum: {cluster_image}")
-    print(f"Da luu ket qua phan cum: {output_csv}")
+    # print(f"Da luu bieu do elbow: {elbow_image}")
+    # print(f"Da luu bieu do phan cum: {cluster_image}")
+    # print(f"Da luu ket qua phan cum: {output_csv}")
     print(f"K duoc chon: {chosen_k}, WCSS = {wcss:.2f}")
 
 

@@ -285,6 +285,23 @@ Biểu đồ Elbow:
 
 ![Biểu đồ Elbow chọn k](cau3_euclid_elbow.png)
 
+## Giải thích chương trình
+
+| Thành phần | Vai trò |
+|---|---|
+| `DATA_LIST` | Lưu dữ liệu đầu vào gồm tên quốc gia, kinh độ và vĩ độ. |
+| `load_country_data()` | Chuyển `DATA_LIST` thành danh sách dòng dữ liệu và ma trận `X`. |
+| `euclidean_distance()` | Tính khoảng cách Euclid giữa hai điểm. |
+| `initialize_centroids()` | Chọn ngẫu nhiên `k` điểm làm tâm cụm ban đầu. |
+| `assign_clusters()` | Gán mỗi điểm vào cụm có tâm gần nhất theo khoảng cách Euclid. |
+| `update_centroids()` | Cập nhật tâm cụm bằng trung bình cộng các điểm trong cụm. |
+| `compute_wcss()` | Tính WCSS để đánh giá độ chặt của cụm. |
+| `kmeans_euclid()` | Thực hiện vòng lặp K-means: gán cụm, cập nhật tâm, kiểm tra dừng. |
+| `run_kmeans_best_of_n()` | Chạy K-means nhiều lần và lấy kết quả có WCSS nhỏ nhất. |
+| `elbow_method()` | Chạy K-means với nhiều giá trị `k` để khảo sát chọn số cụm. |
+| `choose_k_by_elbow()` | Tự chọn `k` tại điểm khuỷu tay của đồ thị WCSS. |
+| `main()` | Điều phối toàn bộ chương trình và in kết quả. |
+
 ## Code hoàn thiện
 ```python
 from pathlib import Path
