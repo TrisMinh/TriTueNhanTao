@@ -1,0 +1,32 @@
+THUAT TOAN BFS
+Thu tu dinh kham pha:
+S -> A -> B -> C -> D -> E -> F -> G -> H -> K -> M -> N -> I -> J -> L -> Z
+
+Bang trang thai:
++------+--------------------------+---------+----------+--------------------------+
+| Buoc | Queue truoc              | Lay ra  | Them vao | Queue sau                |
++------+--------------------------+---------+----------+--------------------------+
+| 1    | [S]                      | S(h=10) | A, B, C  | [A, B, C]                |
+| 2    | [A, B, C]                | A(h=9)  | D, E     | [B, C, D, E]             |
+| 3    | [B, C, D, E]             | B(h=8)  | F, G     | [C, D, E, F, G]          |
+| 4    | [C, D, E, F, G]          | C(h=7)  | H, K     | [D, E, F, G, H, K]       |
+| 5    | [D, E, F, G, H, K]       | D(h=6)  | M, N     | [E, F, G, H, K, M, N]    |
+| 6    | [E, F, G, H, K, M, N]    | E(h=5)  | I        | [F, G, H, K, M, N, I]    |
+| 7    | [F, G, H, K, M, N, I]    | F(h=4)  | J, L     | [G, H, K, M, N, I, J, L] |
+| 8    | [G, H, K, M, N, I, J, L] | G(h=10) | Khong co | [H, K, M, N, I, J, L]    |
+| 9    | [H, K, M, N, I, J, L]    | H(h=10) | Khong co | [K, M, N, I, J, L]       |
+| 10   | [K, M, N, I, J, L]       | K(h=3)  | Z        | [M, N, I, J, L, Z]       |
+| 11   | [M, N, I, J, L, Z]       | M(h=0)  | Khong co | [N, I, J, L, Z]          |
+| 12   | [N, I, J, L, Z]          | N(h=10) | Khong co | [I, J, L, Z]             |
+| 13   | [I, J, L, Z]             | I(h=6)  | Khong co | [J, L, Z]                |
+| 14   | [J, L, Z]                | J(h=0)  | Khong co | [L, Z]                   |
+| 15   | [L, Z]                   | L(h=9)  | Khong co | [Z]                      |
+| 16   | [Z]                      | Z(h=8)  | Khong co | []                       |
++------+--------------------------+---------+----------+--------------------------+
+Ghi nhan moi dinh co h = 0 va tiep tuc cho den khi queue rong.
+
+Cac dinh dich tim duoc:
+M, J
+Cac duong di tu S den cac dinh co h = 0:
+M: S -> A -> D -> M | Tong chi phi = 16
+J: S -> B -> F -> J | Tong chi phi = 13

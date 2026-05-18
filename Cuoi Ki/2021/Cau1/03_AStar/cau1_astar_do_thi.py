@@ -87,6 +87,86 @@ def reconstruct_path(parent, start, goal):
     return path if path[0] == start else None
 
 
+def format_adjacency(adjacency):
+    lines = []
+
+    for vertex in V:
+        neighbors = ", ".join(f"{neighbor}({cost})" for neighbor, cost in adjacency[vertex])
+        lines.append(f"{vertex}: {neighbors}")
+
+    return "\n".join(lines)
+
+
+def format_heuristics(goal):
+    lines = []
+
+    for vertex in V:
+        lines.append(f"h({vertex}) = {heuristic(vertex, goal):.3f}")
+
+    return "\n".join(lines)
+
+
+def format_frontier(frontier):
+    if not frontier:
+        return "[]"
+
+    ordered_items = sorted(frontier)
+    parts = []
+
+    for f_value, h_value, g_value, _, node in ordered_items:
+        parts.append(f"{node}(g={g_value:.0f}, h={h_value:.3f}, f={f_value:.3f})")
+
+    return "[" + ", ".join(parts) + "]"
+
+
+def format_parent_map(parent):
+    items = []
+
+    for vertex in V:
+        if vertex in parent:
+            previous = parent[vertex]
+            previous_text = "None" if previous is None else previous
+            items.append(f"{vertex}:{previous_text}")
+
+    return "{" + ", ".join(items) + "}"
+
+
+def format_astar_steps(steps):
+    if not steps:
+        return "Khong co buoc A* nao duoc ghi nhan."
+
+    headers = ["Step", "Popped", "g", "h", "f", "Frontier", "Updated", "Parents"]
+    rows = []
+
+    for step in steps:
+        updated_text = ", ".join(step["updated"]) if step["updated"] else "-"
+        rows.append([
+            str(step["step"]),
+            step["popped"],
+            f"{step['g']:.0f}",
+            f"{step['h']:.3f}",
+            f"{step['f']:.3f}",
+            step["frontier"],
+            updated_text,
+            format_parent_map(step["parents"]),
+        ])
+
+    widths = [len(header) for header in headers]
+
+    for row in rows:
+        for index, value in enumerate(row):
+            widths[index] = max(widths[index], len(value))
+
+    lines = []
+    lines.append(" | ".join(headers[index].ljust(widths[index]) for index in range(len(headers))))
+    lines.append("-+-".join("-" * width for width in widths))
+
+    for row in rows:
+        lines.append(" | ".join(row[index].ljust(widths[index]) for index in range(len(row))))
+
+    return "\n".join(lines)
+
+
 def astar(adjacency, start, goal):
     frontier = []
     order = 0
@@ -97,18 +177,32 @@ def astar(adjacency, start, goal):
     g_score = {start: 0}
     visited = set()
     exploration_order = []
+    steps = []
+    step_no = 0
 
     while frontier:
-        _, _, current_g, _, current = heapq.heappop(frontier)
+        current_f, current_h, current_g, _, current = heapq.heappop(frontier)
 
         if current in visited:
             continue
 
         visited.add(current)
         exploration_order.append(current)
+        updated = []
 
         if current == goal:
-            return reconstruct_path(parent, start, goal), exploration_order
+            step_no += 1
+            steps.append({
+                "step": step_no,
+                "popped": current,
+                "g": current_g,
+                "h": current_h,
+                "f": current_f,
+                "frontier": format_frontier(frontier),
+                "updated": updated,
+                "parents": dict(parent),
+            })
+            return reconstruct_path(parent, start, goal), exploration_order, steps
 
         for neighbor, cost in adjacency[current]:
             tentative_g = current_g + cost
@@ -120,16 +214,45 @@ def astar(adjacency, start, goal):
                 f = tentative_g + h
                 order += 1
                 heapq.heappush(frontier, (f, h, tentative_g, order, neighbor))
+                updated.append(f"{neighbor}(g={tentative_g:.0f}, h={h:.3f}, f={f:.3f})")
 
-    return None, exploration_order
+        step_no += 1
+        steps.append({
+            "step": step_no,
+            "popped": current,
+            "g": current_g,
+            "h": current_h,
+            "f": current_f,
+            "frontier": format_frontier(frontier),
+            "updated": updated,
+            "parents": dict(parent),
+        })
+
+    return None, exploration_order, steps
 
 
 def solve():
     graph = build_graph(V, E)
-    path, exploration_order = astar(graph.adjacency, "S", "G")
+    path, exploration_order, steps = astar(graph.adjacency, "S", "G")
 
     lines = [
         "THUAT TOAN A*",
+        "",
+        "Tap dinh V:",
+        str(V),
+        "",
+        "Tap canh E:",
+        str(E),
+        "",
+        "Danh sach ke kem chi phi:",
+        format_adjacency(graph.adjacency),
+        "",
+        "Gia tri heuristic den G:",
+        format_heuristics("G"),
+        "",
+        "Bang cac buoc A*:",
+        format_astar_steps(steps),
+        "",
         "Thu tu dinh kham pha:",
         " -> ".join(exploration_order),
         "",

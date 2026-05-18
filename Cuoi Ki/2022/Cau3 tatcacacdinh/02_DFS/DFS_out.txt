@@ -1,0 +1,32 @@
+THUAT TOAN DFS
+Thu tu dinh kham pha:
+S -> A -> D -> M -> N -> E -> I -> B -> F -> J -> L -> G -> C -> H -> K -> Z
+
+Bang trang thai:
++------+-----------------+---------+----------+-----------------+
+| Buoc | Stack truoc     | Lay ra  | Them vao | Stack sau       |
++------+-----------------+---------+----------+-----------------+
+| 1    | [S]             | S(h=10) | C, B, A  | [C, B, A]       |
+| 2    | [C, B, A]       | A(h=9)  | E, D     | [C, B, E, D]    |
+| 3    | [C, B, E, D]    | D(h=6)  | N, M     | [C, B, E, N, M] |
+| 4    | [C, B, E, N, M] | M(h=0)  | Khong co | [C, B, E, N]    |
+| 5    | [C, B, E, N]    | N(h=10) | Khong co | [C, B, E]       |
+| 6    | [C, B, E]       | E(h=5)  | I        | [C, B, I]       |
+| 7    | [C, B, I]       | I(h=6)  | Khong co | [C, B]          |
+| 8    | [C, B]          | B(h=8)  | G, F     | [C, G, F]       |
+| 9    | [C, G, F]       | F(h=4)  | L, J     | [C, G, L, J]    |
+| 10   | [C, G, L, J]    | J(h=0)  | Khong co | [C, G, L]       |
+| 11   | [C, G, L]       | L(h=9)  | Khong co | [C, G]          |
+| 12   | [C, G]          | G(h=10) | Khong co | [C]             |
+| 13   | [C]             | C(h=7)  | K, H     | [K, H]          |
+| 14   | [K, H]          | H(h=10) | Khong co | [K]             |
+| 15   | [K]             | K(h=3)  | Z        | [Z]             |
+| 16   | [Z]             | Z(h=8)  | Khong co | []              |
++------+-----------------+---------+----------+-----------------+
+Ghi nhan moi dinh co h = 0 va tiep tuc cho den khi stack rong.
+
+Cac dinh dich tim duoc:
+M, J
+Cac duong di tu S den cac dinh co h = 0:
+M: S -> A -> D -> M | Tong chi phi = 16
+J: S -> B -> F -> J | Tong chi phi = 13

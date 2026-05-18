@@ -68,6 +68,75 @@ def reconstruct_path(parent, start, goal):
     return path if path[0] == start else None
 
 
+def format_adjacency(adjacency):
+    lines = []
+
+    for vertex in V:
+        neighbors = ", ".join(f"{neighbor}({cost})" for neighbor, cost in adjacency[vertex])
+        lines.append(f"{vertex}: {neighbors}")
+
+    return "\n".join(lines)
+
+
+def format_frontier(frontier):
+    if not frontier:
+        return "[]"
+
+    ordered_items = sorted(frontier)
+    parts = []
+
+    for cost, _, node in ordered_items:
+        parts.append(f"{node}(cost={cost})")
+
+    return "[" + ", ".join(parts) + "]"
+
+
+def format_parent_map(parent):
+    items = []
+
+    for vertex in V:
+        if vertex in parent:
+            previous = parent[vertex]
+            previous_text = "None" if previous is None else previous
+            items.append(f"{vertex}:{previous_text}")
+
+    return "{" + ", ".join(items) + "}"
+
+
+def format_ucs_steps(steps):
+    if not steps:
+        return "Khong co buoc UCS nao duoc ghi nhan."
+
+    headers = ["Step", "Popped", "Cost", "Frontier", "Updated", "Parents"]
+    rows = []
+
+    for step in steps:
+        updated_text = ", ".join(step["updated"]) if step["updated"] else "-"
+        rows.append([
+            str(step["step"]),
+            step["popped"],
+            str(step["cost"]),
+            step["frontier"],
+            updated_text,
+            format_parent_map(step["parents"]),
+        ])
+
+    widths = [len(header) for header in headers]
+
+    for row in rows:
+        for index, value in enumerate(row):
+            widths[index] = max(widths[index], len(value))
+
+    lines = []
+    lines.append(" | ".join(headers[index].ljust(widths[index]) for index in range(len(headers))))
+    lines.append("-+-".join("-" * width for width in widths))
+
+    for row in rows:
+        lines.append(" | ".join(row[index].ljust(widths[index]) for index in range(len(row))))
+
+    return "\n".join(lines)
+
+
 def ucs(adjacency, start, goal):
     frontier = []
     order = 0
@@ -77,6 +146,8 @@ def ucs(adjacency, start, goal):
     cost_so_far = {start: 0}
     visited = set()
     exploration_order = []
+    steps = []
+    step_no = 0
 
     while frontier:
         current_cost, _, current = heapq.heappop(frontier)
@@ -86,9 +157,19 @@ def ucs(adjacency, start, goal):
 
         visited.add(current)
         exploration_order.append(current)
+        updated = []
 
         if current == goal:
-            return reconstruct_path(parent, start, goal), exploration_order
+            step_no += 1
+            steps.append({
+                "step": step_no,
+                "popped": current,
+                "cost": current_cost,
+                "frontier": format_frontier(frontier),
+                "updated": updated,
+                "parents": dict(parent),
+            })
+            return reconstruct_path(parent, start, goal), exploration_order, steps
 
         for neighbor, edge_cost in adjacency[current]:
             new_cost = current_cost + edge_cost
@@ -98,16 +179,40 @@ def ucs(adjacency, start, goal):
                 parent[neighbor] = current
                 order += 1
                 heapq.heappush(frontier, (new_cost, order, neighbor))
+                updated.append(f"{neighbor}(cost={new_cost})")
 
-    return None, exploration_order
+        step_no += 1
+        steps.append({
+            "step": step_no,
+            "popped": current,
+            "cost": current_cost,
+            "frontier": format_frontier(frontier),
+            "updated": updated,
+            "parents": dict(parent),
+        })
+
+    return None, exploration_order, steps
 
 
 def solve():
     graph = build_graph(V, E)
-    path, exploration_order = ucs(graph.adjacency, "S", "G")
+    path, exploration_order, steps = ucs(graph.adjacency, "S", "G")
 
     lines = [
         "THUAT TOAN UCS",
+        "",
+        "Tap dinh V:",
+        str(V),
+        "",
+        "Tap canh E:",
+        str(E),
+        "",
+        "Danh sach ke kem chi phi:",
+        format_adjacency(graph.adjacency),
+        "",
+        "Bang cac buoc UCS:",
+        format_ucs_steps(steps),
+        "",
         "Thu tu dinh kham pha:",
         " -> ".join(exploration_order),
         "",

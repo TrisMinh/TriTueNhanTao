@@ -1,4 +1,27 @@
 THUAT TOAN DFS
+
+Danh sach ke:
+S: A, B, C
+A: S, B, D
+B: S, A, C, D, F, G
+C: S, B, F
+D: A, B, E
+E: D, F, G
+F: B, C, E, H
+G: B, E, H
+H: F, G
+
+Bang cac buoc DFS:
+Step | Popped | Stack        | Discovered | Parents                                         
+-----+--------+--------------+------------+-------------------------------------------------
+1    | S      | [C, B, A]    | C, B, A    | {S:None, C:S, B:S, A:S}                         
+2    | A      | [C, B, D]    | D          | {S:None, C:S, B:S, A:S, D:A}                    
+3    | D      | [C, B, E]    | E          | {S:None, C:S, B:S, A:S, D:A, E:D}               
+4    | E      | [C, B, G, F] | G, F       | {S:None, C:S, B:S, A:S, D:A, E:D, G:E, F:E}     
+5    | F      | [C, B, G, H] | H          | {S:None, C:S, B:S, A:S, D:A, E:D, G:E, F:E, H:F}
+6    | H      | [C, B, G]    | -          | {S:None, C:S, B:S, A:S, D:A, E:D, G:E, F:E, H:F}
+7    | G      | [C, B]       | -          | {S:None, C:S, B:S, A:S, D:A, E:D, G:E, F:E, H:F}
+
 Thu tu dinh kham pha:
 S -> A -> D -> E -> F -> H -> G
 

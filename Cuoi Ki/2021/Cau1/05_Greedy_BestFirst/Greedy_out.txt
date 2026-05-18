@@ -1,4 +1,40 @@
 THUAT TOAN GREEDY BEST FIRST SEARCH
+
+Tap dinh V:
+['S', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H']
+
+Tap canh E:
+[('S', 'A'), ('S', 'B'), ('S', 'C'), ('A', 'B'), ('A', 'D'), ('B', 'C'), ('B', 'D'), ('B', 'F'), ('B', 'G'), ('C', 'F'), ('D', 'E'), ('E', 'F'), ('E', 'G'), ('F', 'H'), ('G', 'H')]
+
+Danh sach ke:
+S: A, B, C
+A: S, B, D
+B: S, A, C, D, F, G
+C: S, B, F
+D: A, B, E
+E: D, F, G
+F: B, C, E, H
+G: B, E, H
+H: F, G
+
+Gia tri heuristic den G:
+h(S) = 5.000
+h(A) = 4.123
+h(B) = 3.000
+h(C) = 4.123
+h(D) = 2.236
+h(E) = 1.414
+h(F) = 2.236
+h(G) = 0.000
+h(H) = 1.414
+
+Bang cac buoc Greedy Best First Search:
+Step | Popped | h     | Frontier                                                     | Discovered                         | Parents                               
+-----+--------+-------+--------------------------------------------------------------+------------------------------------+---------------------------------------
+1    | S      | 5.000 | [B(h=3.000), A(h=4.123), C(h=4.123)]                         | A(h=4.123), B(h=3.000), C(h=4.123) | {S:None, A:S, B:S, C:S}               
+2    | B      | 3.000 | [G(h=0.000), D(h=2.236), F(h=2.236), A(h=4.123), C(h=4.123)] | D(h=2.236), F(h=2.236), G(h=0.000) | {S:None, A:S, B:S, C:S, D:B, F:B, G:B}
+3    | G      | 0.000 | [D(h=2.236), F(h=2.236), A(h=4.123), C(h=4.123)]             | -                                  | {S:None, A:S, B:S, C:S, D:B, F:B, G:B}
+
 Thu tu dinh kham pha:
 S -> B -> G
 

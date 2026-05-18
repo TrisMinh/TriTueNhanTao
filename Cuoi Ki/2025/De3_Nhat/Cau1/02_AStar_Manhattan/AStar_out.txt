@@ -1,0 +1,59 @@
+THUAT TOAN A* - MANHATTAN
+
+Trang thai bat dau:
+s
+
+Trang thai dich:
+i
+
+Danh sach ke sau khi loai vach ngan:
+a: b, c
+b: i, a
+c: a, h
+i: b, e, k
+e: m, i
+f: s, p
+s: h, f
+h: c, s
+k: i, m
+m: e, n, k
+n: m
+p: f, q
+q: r, p
+r: t, q
+t: g, r
+g: t
+
+Gia tri heuristic Manhattan:
+h(a) = 2
+h(b) = 1
+h(c) = 1
+h(i) = 0
+h(e) = 1
+h(f) = 4
+h(s) = 3
+h(h) = 2
+h(k) = 1
+h(m) = 2
+h(n) = 3
+h(p) = 5
+h(q) = 4
+h(r) = 3
+h(t) = 2
+h(g) = 3
+
+Bang cac buoc A*:
+Buoc | Lay ra | g | h | f | Them vao frontier                  | Frontier sau buoc                    | Parent                                
+-----+--------+---+---+---+------------------------------------+--------------------------------------+---------------------------------------
+1    | s      | 0 | 3 | 3 | h(g=1, h=2, f=3), f(g=1, h=4, f=5) | [h(g=1, h=2, f=3), f(g=1, h=4, f=5)] | {f:s, s:None, h:s}                    
+2    | h      | 1 | 2 | 3 | c(g=2, h=1, f=3)                   | [c(g=2, h=1, f=3), f(g=1, h=4, f=5)] | {c:h, f:s, s:None, h:s}               
+3    | c      | 2 | 1 | 3 | a(g=3, h=2, f=5)                   | [a(g=3, h=2, f=5), f(g=1, h=4, f=5)] | {a:c, c:h, f:s, s:None, h:s}          
+4    | a      | 3 | 2 | 5 | b(g=4, h=1, f=5)                   | [b(g=4, h=1, f=5), f(g=1, h=4, f=5)] | {a:c, b:a, c:h, f:s, s:None, h:s}     
+5    | b      | 4 | 1 | 5 | i(g=5, h=0, f=5)                   | [i(g=5, h=0, f=5), f(g=1, h=4, f=5)] | {a:c, b:a, c:h, i:b, f:s, s:None, h:s}
+6    | i      | 5 | 0 | 5 | -                                  | [f(g=1, h=4, f=5)]                   | {a:c, b:a, c:h, i:b, f:s, s:None, h:s}
+
+Thu tu trang thai duyet:
+s -> h -> c -> a -> b -> i
+
+Duong di:
+s -> h -> c -> a -> b -> i

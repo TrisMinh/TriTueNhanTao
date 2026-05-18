@@ -20,3 +20,14 @@ S -> A -> B -> C -> D -> F -> G
 
 Duong di tu S den G:
 S -> B -> G
+
+Bang cac buoc BFS:
+Step | Popped | Queue      | Parents                               
+-----+--------+------------+---------------------------------------
+1    | S      | A, B, C    | A:S, B:S, C:S                         
+2    | A      | B, C, D    | A:S, B:S, C:S, D:A                    
+3    | B      | C, D, F, G | A:S, B:S, C:S, D:A, F:B, G:B          
+4    | C      | D, F, G    | A:S, B:S, C:S, D:A, F:B, G:B          
+5    | D      | F, G, E    | A:S, B:S, C:S, D:A, E:D, F:B, G:B     
+6    | F      | G, E, H    | A:S, B:S, C:S, D:A, E:D, F:B, G:B, H:F
+7    | G      | E, H       | A:S, B:S, C:S, D:A, E:D, F:B, G:B, H:F

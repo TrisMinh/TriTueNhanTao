@@ -77,21 +77,36 @@ def bfs(adjacency, start, goal):
     visited = {start}
     parent = {start: None}
     exploration_order = []
+    steps = []
 
+    step_no = 0
     while queue:
         current = queue.popleft()
         exploration_order.append(current)
 
-        if current == goal:
-            return reconstruct_path(parent, start, goal), exploration_order
-
+        # process neighbors and record which were discovered this step
+        discovered = []
         for neighbor in adjacency[current]:
             if neighbor not in visited:
                 visited.add(neighbor)
                 parent[neighbor] = current
                 queue.append(neighbor)
+                discovered.append(neighbor)
 
-    return None, exploration_order
+        # snapshot for this step (after processing current)
+        step_no += 1
+        steps.append({
+            "step": step_no,
+            "popped": current,
+            "queue": list(queue),
+            "discovered": discovered.copy(),
+            "parents": dict(parent),
+        })
+
+        if current == goal:
+            return reconstruct_path(parent, start, goal), exploration_order, steps
+
+    return None, exploration_order, steps
 
 
 def format_adjacency(adjacency):
@@ -104,10 +119,46 @@ def format_adjacency(adjacency):
     return "\n".join(lines)
 
 
+def format_bfs_steps(steps):
+    # prepare string representations
+    rows = []
+    for s in steps:
+        step = str(s["step"])
+        popped = s["popped"]
+        queue = ", ".join(s["queue"]) if s["queue"] else ""
+        # parents as ordered pairs by vertex order V to be deterministic
+        parents_items = []
+        for v in V:
+            if v in s["parents"] and s["parents"][v] is not None:
+                parents_items.append(f"{v}:{s['parents'][v]}")
+        parents = ", ".join(parents_items)
+        rows.append((step, popped, queue, parents))
+
+    # compute column widths for uniform padding
+    col_widths = [0, 0, 0, 0]
+    headers = ("Step", "Popped", "Queue", "Parents")
+    for i, h in enumerate(headers):
+        col_widths[i] = max(col_widths[i], len(h))
+
+    for r in rows:
+        for i, cell in enumerate(r):
+            col_widths[i] = max(col_widths[i], len(cell))
+
+    # build lines
+    header_line = " | ".join(headers[i].ljust(col_widths[i]) for i in range(4))
+    sep_line = "-+-".join("-" * col_widths[i] for i in range(4))
+    lines = [header_line, sep_line]
+    for r in rows:
+        line = " | ".join(r[i].ljust(col_widths[i]) for i in range(4))
+        lines.append(line)
+
+    return "\n".join(lines)
+
+
 def solve():
     graph = build_graph(V, E)
     adjacency = graph.adjacency
-    path, exploration_order = bfs(adjacency, "S", "G")
+    path, exploration_order, steps = bfs(adjacency, "S", "G")
 
     lines = [
         "Tap dinh V:",
@@ -129,6 +180,12 @@ def solve():
     else:
         lines.append("Duong di tu S den G:")
         lines.append(" -> ".join(path))
+
+    # add formatted per-step BFS table
+    if steps:
+        lines.append("")
+        lines.append("Bang cac buoc BFS:")
+        lines.append(format_bfs_steps(steps))
 
     return "\n".join(lines)
 

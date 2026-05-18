@@ -67,40 +67,108 @@ def reconstruct_path(parent, start, goal):
     return path if path[0] == start else None
 
 
+def format_parent_map(parent):
+    items = []
+    for vertex, previous in parent.items():
+        previous_text = "None" if previous is None else previous
+        items.append(f"{vertex}:{previous_text}")
+    return "{" + ", ".join(items) + "}"
+
+
+def format_dfs_steps(steps):
+    if not steps:
+        return "Khong co buoc DFS nao duoc ghi nhan."
+
+    headers = ["Step", "Popped", "Stack", "Discovered", "Parents"]
+    rows = []
+
+    for step_index, popped, stack_snapshot, discovered_nodes, parent_snapshot in steps:
+        stack_text = "[" + ", ".join(stack_snapshot) + "]"
+        discovered_text = ", ".join(discovered_nodes) if discovered_nodes else "-"
+        parent_text = format_parent_map(parent_snapshot)
+        rows.append([
+            str(step_index),
+            popped,
+            stack_text,
+            discovered_text,
+            parent_text,
+        ])
+
+    widths = [len(header) for header in headers]
+    for row in rows:
+        for index, value in enumerate(row):
+            widths[index] = max(widths[index], len(value))
+
+    def pad(value, width):
+        return value.ljust(width)
+
+    lines = []
+    lines.append(" | ".join(pad(header, widths[index]) for index, header in enumerate(headers)))
+    lines.append("-+-".join("-" * width for width in widths))
+    for row in rows:
+        lines.append(" | ".join(pad(value, widths[index]) for index, value in enumerate(row)))
+
+    return "\n".join(lines)
+
+
 def dfs(adjacency, start, goal):
     stack = [start]
     visited = set()
     discovered = {start}
     parent = {start: None}
     exploration_order = []
+    steps = []
+    step_index = 0
 
     while stack:
+        step_index += 1
         current = stack.pop()
 
         if current in visited:
+            steps.append((step_index, current, list(stack), [], dict(parent)))
             continue
 
         visited.add(current)
         exploration_order.append(current)
 
+        discovered_this_step = []
+
         if current == goal:
-            return reconstruct_path(parent, start, goal), exploration_order
+            steps.append((step_index, current, list(stack), discovered_this_step, dict(parent)))
+            return reconstruct_path(parent, start, goal), exploration_order, steps
 
         for neighbor in reversed(adjacency[current]):
             if neighbor not in discovered:
                 discovered.add(neighbor)
                 parent[neighbor] = current
                 stack.append(neighbor)
+                discovered_this_step.append(neighbor)
 
-    return None, exploration_order
+        steps.append((step_index, current, list(stack), discovered_this_step, dict(parent)))
+
+    return None, exploration_order, steps
+
+
+def format_adjacency(adjacency):
+    lines = ["Danh sach ke:"]
+    for vertex in V:
+        neighbors = ", ".join(adjacency[vertex])
+        lines.append(f"{vertex}: {neighbors}")
+    return "\n".join(lines)
 
 
 def solve():
     graph = build_graph(V, E)
-    path, exploration_order = dfs(graph.adjacency, "S", "G")
+    path, exploration_order, steps = dfs(graph.adjacency, "S", "G")
 
     lines = [
         "THUAT TOAN DFS",
+        "",
+        format_adjacency(graph.adjacency),
+        "",
+        "Bang cac buoc DFS:",
+        format_dfs_steps(steps),
+        "",
         "Thu tu dinh kham pha:",
         " -> ".join(exploration_order),
         "",

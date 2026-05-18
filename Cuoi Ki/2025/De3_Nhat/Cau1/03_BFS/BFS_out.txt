@@ -1,0 +1,48 @@
+THUAT TOAN BFS - BREADTH FIRST SEARCH
+
+Trang thai bat dau:
+s
+
+Trang thai dich:
+i
+
+Danh sach ke sau khi loai vach ngan:
+a: b, c
+b: i, a
+c: a, h
+i: b, e, k
+e: m, i
+f: s, p
+s: h, f
+h: c, s
+k: i, m
+m: e, n, k
+n: m
+p: f, q
+q: r, p
+r: t, q
+t: g, r
+g: t
+
+Bang cac buoc BFS:
+Buoc | Lay ra | Them vao frontier | Frontier sau buoc | Parent                                                    
+-----+--------+-------------------+-------------------+-----------------------------------------------------------
+1    | s      | h, f              | [h, f]            | {f:s, s:None, h:s}                                        
+2    | h      | c                 | [f, c]            | {c:h, f:s, s:None, h:s}                                   
+3    | f      | p                 | [c, p]            | {c:h, f:s, s:None, h:s, p:f}                              
+4    | c      | a                 | [p, a]            | {a:c, c:h, f:s, s:None, h:s, p:f}                         
+5    | p      | q                 | [a, q]            | {a:c, c:h, f:s, s:None, h:s, p:f, q:p}                    
+6    | a      | b                 | [q, b]            | {a:c, b:a, c:h, f:s, s:None, h:s, p:f, q:p}               
+7    | q      | r                 | [b, r]            | {a:c, b:a, c:h, f:s, s:None, h:s, p:f, q:p, r:q}          
+8    | b      | i                 | [r, i]            | {a:c, b:a, c:h, i:b, f:s, s:None, h:s, p:f, q:p, r:q}     
+9    | r      | t                 | [i, t]            | {a:c, b:a, c:h, i:b, f:s, s:None, h:s, p:f, q:p, r:q, t:r}
+10   | i      | -                 | [t]               | {a:c, b:a, c:h, i:b, f:s, s:None, h:s, p:f, q:p, r:q, t:r}
+
+Thu tu trang thai duyet:
+s -> h -> f -> c -> p -> a -> q -> b -> r -> i
+
+Duong di:
+s -> h -> c -> a -> b -> i
+
+So buoc di:
+5
