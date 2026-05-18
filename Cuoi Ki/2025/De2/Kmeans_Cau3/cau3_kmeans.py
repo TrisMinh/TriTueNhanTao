@@ -5,6 +5,9 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 
+DATA_FILE_NAME = "Countries.csv"
+
+
 def euclidean_distance(point_a, point_b):
     return np.sqrt(np.sum((point_a - point_b) ** 2))
 
@@ -101,17 +104,15 @@ def find_data_file():
     current_dir = Path(__file__).resolve().parent
     project_dir = current_dir.parents[2]
     candidates = [
-        current_dir / "Countries.csv",
-        current_dir / "Countries-exercise.csv",
-        project_dir / "Countries.csv",
-        project_dir / "Countries-exercise.csv",
+        current_dir / DATA_FILE_NAME,
+        project_dir / DATA_FILE_NAME,
     ]
 
     for file_path in candidates:
         if file_path.exists():
             return file_path
 
-    raise FileNotFoundError("Khong tim thay Countries.csv hoac Countries-exercise.csv")
+    raise FileNotFoundError(f"Khong tim thay {DATA_FILE_NAME}")
 
 
 def load_country_data(file_path):

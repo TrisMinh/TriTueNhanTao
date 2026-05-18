@@ -117,6 +117,9 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 
+DATA_FILE_NAME = "Countries.csv"
+
+
 def manhattan_distance(point_a, point_b):
     return np.sum(np.abs(point_a - point_b))
 
