@@ -35,40 +35,61 @@ Bài toán có 3 lớp:
 - `Iris-versicolor`
 - `Iris-virginica`
 
-Vì đây là bài toán phân loại nhiều lớp, em dùng:
+Vì đây là bài toán phân loại nhiều lớp, hàm mất mát được sử dụng là:
 
 ```text
-Softmax + Cross-Entropy Loss
+Cross-Entropy Loss
 ```
 
-Softmax chuyển đầu ra của mạng thành xác suất:
+Hàm Cross-Entropy dùng để đo mức độ sai lệch giữa nhãn thật và xác suất dự đoán của mô hình. Trong bài này, nhãn thật được biểu diễn dưới dạng one-hot.
+
+Ví dụ, nếu mẫu hoa thuộc lớp `Iris-versicolor` thì nhãn thật là:
 
 ```text
-p_i = exp(z_i) / sum(exp(z_j))
+y = [0, 1, 0]
 ```
 
-Cross-Entropy Loss:
+Nếu mô hình dự đoán xác suất:
 
 ```text
-Loss = -1/m * sum(y * log(y_hat))
+y_hat = [0.05, 0.90, 0.05]
+```
+
+thì mô hình đang dự đoán tốt vì xác suất của lớp đúng cao. Ngược lại, nếu mô hình dự đoán:
+
+```text
+y_hat = [0.70, 0.20, 0.10]
+```
+
+thì mô hình đang dự đoán kém vì xác suất của lớp đúng thấp.
+
+Với một mẫu dữ liệu, Cross-Entropy Loss được tính bằng:
+
+```text
+L = -sum(y_i * log(y_hat_i))
+```
+
+Với toàn bộ `m` mẫu huấn luyện, chương trình lấy trung bình loss của các mẫu:
+
+```text
+Loss = -1/m * sum(L_k)
+     = -1/m * sum(sum(y_ki * log(y_hat_ki)))
 ```
 
 Trong đó:
 
 - `m`: số mẫu huấn luyện.
+- `k`: chỉ số mẫu.
+- `i`: chỉ số lớp.
 - `y`: nhãn thật dạng one-hot.
 - `y_hat`: xác suất dự đoán.
 - Loss càng nhỏ thì mô hình dự đoán càng tốt.
 
+Mục tiêu huấn luyện là tìm bộ trọng số và bias sao cho Cross-Entropy Loss trung bình trên toàn bộ tập huấn luyện là nhỏ nhất.
+
 ### Trả lời: Dán code hàm loss
 
 ```python
-def softmax(Z):
-    shifted = Z - np.max(Z, axis=1, keepdims=True)
-    exp_scores = np.exp(shifted)
-    return exp_scores / np.sum(exp_scores, axis=1, keepdims=True)
-
-
 def cross_entropy_loss(y_true_one_hot, y_pred_proba):
     eps = 1e-12
     clipped = np.clip(y_pred_proba, eps, 1 - eps)
@@ -89,9 +110,9 @@ Kiến trúc tổng quát:
 4 -> 8 -> 3
 ```
 
-Hình minh họa kiến trúc mạng:
+Hình minh họa kiến trúc mạng, trong đó thể hiện rõ ReLU, Softmax và Cross-Entropy Loss:
 
-![Kiến trúc Neural Network 4-8-3](nn_architecture_v2.png)
+![Kiến trúc Neural Network 4-8-3 với ReLU, Softmax và Cross-Entropy](nn_architecture_v3.png)
 
 Ý nghĩa hình:
 
@@ -99,7 +120,8 @@ Hình minh họa kiến trúc mạng:
 - Tầng ẩn gồm 8 neuron, nhận thông tin từ toàn bộ 4 đặc trưng đầu vào.
 - Hàm kích hoạt ReLU được dùng ở tầng ẩn để tạo tính phi tuyến.
 - Tầng đầu ra gồm 3 neuron, tương ứng 3 loài hoa.
-- Softmax biến điểm số ở tầng đầu ra thành xác suất để chọn nhãn dự đoán.
+- Hàm kích hoạt Softmax biến điểm số ở tầng đầu ra thành xác suất.
+- Hàm mất mát Cross-Entropy đo sai lệch giữa xác suất dự đoán và nhãn thật.
 
 Trong đó:
 
@@ -109,6 +131,77 @@ Trong đó:
 | Hidden layer | 8 | Học quan hệ giữa các đặc trưng |
 | Output layer | 3 | Trả về điểm/xác suất cho 3 loài hoa |
 
+Các hàm kích hoạt trong kiến trúc:
+
+```text
+Hidden layer : ReLU
+Output layer : Softmax
+```
+
+ReLU được dùng ở tầng ẩn để tạo tính phi tuyến:
+
+```text
+ReLU(z) = max(0, z)
+```
+
+Nếu không có hàm kích hoạt phi tuyến như ReLU, các phép biến đổi tuyến tính trong nhiều tầng có thể gộp lại thành một phép tuyến tính duy nhất. Khi đó mạng neural sẽ không tận dụng được lợi thế của tầng ẩn.
+
+Softmax được dùng ở tầng đầu ra để chuyển 3 điểm số của 3 lớp thành 3 xác suất:
+
+```text
+p_i = exp(z_i) / sum(exp(z_j))
+```
+
+Ba xác suất sau Softmax có tổng bằng 1. Mô hình chọn lớp có xác suất lớn nhất làm nhãn dự đoán.
+
+### Quy trình phân loại
+
+1. Tiền xử lý dữ liệu:
+
+- Đọc dữ liệu từ file `input_2.csv`.
+- Lấy 4 cột đầu làm đặc trưng đầu vào `X`.
+- Lấy cột cuối làm nhãn thật `y`.
+- Chuẩn hóa dữ liệu đầu vào bằng cách trừ trung bình và chia độ lệch chuẩn để các đặc trưng có cùng thang đo.
+
+2. Mã hóa nhãn:
+
+- Chuyển tên loài hoa thành số nguyên:
+
+```text
+Iris-setosa     -> 0
+Iris-versicolor -> 1
+Iris-virginica  -> 2
+```
+
+- Chuyển nhãn số sang dạng one-hot để tính Cross-Entropy Loss.
+
+3. Mô hình phân loại:
+
+- Sử dụng Neural Network có kiến trúc `4 -> 8 -> 3`.
+- Tầng ẩn dùng hàm kích hoạt ReLU.
+- Tầng đầu ra dùng hàm kích hoạt Softmax để tạo xác suất cho 3 lớp.
+
+4. Huấn luyện mô hình:
+
+- Khởi tạo trọng số `W1`, `W2` và bias `b1`, `b2`.
+- Lặp qua nhiều epoch:
+- Forward propagation để tính xác suất dự đoán.
+- Tính Cross-Entropy Loss giữa xác suất dự đoán và nhãn thật.
+- Backward propagation để tính gradient.
+- Cập nhật trọng số và bias bằng gradient descent.
+
+5. Dự đoán:
+
+- Đọc 30 mẫu cần dự đoán từ file `output_2.csv`.
+- Chuẩn hóa 30 mẫu này bằng mean và std của tập huấn luyện.
+- Đưa dữ liệu qua mô hình đã huấn luyện để lấy xác suất của 3 lớp.
+- Chọn lớp có xác suất lớn nhất bằng `argmax`.
+
+6. Kết quả:
+
+- Chuyển nhãn số dự đoán về tên loài hoa tương ứng.
+- Lưu kết quả dự đoán vào file `nn_predictions.csv`.
+
 Tóm tắt theo đúng yêu cầu mô tả mô hình phân loại:
 
 - Mạng có tổng cộng 15 neuron chính: 4 neuron đầu vào, 8 neuron tầng ẩn và 3 neuron đầu ra.
@@ -116,6 +209,7 @@ Tóm tắt theo đúng yêu cầu mô tả mô hình phân loại:
 - 8 neuron tầng ẩn học các tổ hợp đặc trưng sau khi nhân trọng số, cộng bias và qua ReLU.
 - 3 neuron đầu ra phụ trách 3 loài hoa: neuron 0 cho `Iris-setosa`, neuron 1 cho `Iris-versicolor`, neuron 2 cho `Iris-virginica`.
 - Softmax chuyển 3 giá trị đầu ra thành xác suất.
+- Cross-Entropy được dùng trong quá trình huấn luyện để tối ưu trọng số.
 - Mô hình phân loại bằng cách chọn neuron đầu ra có xác suất lớn nhất.
 
 4 neuron đầu vào tương ứng với:

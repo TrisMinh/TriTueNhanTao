@@ -30,6 +30,12 @@ Mô hình Softmax Logistic Regression trong chương trình có kiến trúc:
 4 -> 3
 ```
 
+Hình kiến trúc:
+
+```text
+02_Softmax_Logistic_Regression/softmax_architecture_v3.png
+```
+
 Trong đó:
 
 - 4 đầu vào tương ứng 4 đặc trưng của hoa Iris: chiều dài đài hoa, chiều rộng đài hoa, chiều dài cánh hoa, chiều rộng cánh hoa.
@@ -38,7 +44,8 @@ Trong đó:
   - neuron 1 phụ trách lớp `Iris-versicolor`;
   - neuron 2 phụ trách lớp `Iris-virginica`.
 - Mỗi neuron đầu ra tính một điểm số tuyến tính từ 4 đặc trưng đầu vào.
-- Lớp Softmax biến 3 điểm số này thành 3 xác suất có tổng bằng 1.
+- Softmax là hàm kích hoạt tầng đầu ra, biến 3 điểm số này thành 3 xác suất có tổng bằng 1.
+- Cross-Entropy là hàm mất mát, dùng để đo sai lệch giữa xác suất dự đoán và nhãn thật dạng one-hot.
 - Mẫu hoa được gán vào lớp có xác suất lớn nhất.
 
 Công thức tổng quát:
@@ -61,12 +68,19 @@ Mô hình Neural Network trong báo cáo `01_Neural_Network` có kiến trúc:
 4 -> 8 -> 3
 ```
 
+Hình kiến trúc:
+
+```text
+01_Neural_Network/nn_architecture_v3.png
+```
+
 Ý nghĩa:
 
 - 4 neuron đầu vào nhận 4 đặc trưng của hoa.
-- 8 neuron tầng ẩn học quan hệ giữa các đặc trưng bằng phép tuyến tính kết hợp hàm ReLU.
+- 8 neuron tầng ẩn học quan hệ giữa các đặc trưng bằng phép tuyến tính kết hợp hàm kích hoạt ReLU.
 - 3 neuron đầu ra tương ứng 3 loài hoa: `Iris-setosa`, `Iris-versicolor`, `Iris-virginica`.
-- Softmax biến 3 đầu ra thành xác suất.
+- Softmax là hàm kích hoạt tầng đầu ra, dùng để biến 3 đầu ra thành xác suất.
+- Cross-Entropy là hàm mất mát, dùng để đo sai lệch giữa xác suất dự đoán sau Softmax và nhãn thật dạng one-hot.
 - Nhãn dự đoán là lớp có xác suất lớn nhất.
 
 Mô hình này khác Softmax Logistic Regression ở chỗ có thêm tầng ẩn. Vì vậy Neural Network có khả năng học quan hệ phi tuyến tốt hơn.
@@ -79,6 +93,12 @@ Mô hình Multiclass Perceptron trong báo cáo `03_Multiclass_Perceptron` có k
 4 -> 3
 ```
 
+Hình kiến trúc:
+
+```text
+03_Multiclass_Perceptron/perceptron_architecture_v3.png
+```
+
 Ý nghĩa:
 
 - 4 đầu vào nhận 4 đặc trưng của hoa.
@@ -87,6 +107,7 @@ Mô hình Multiclass Perceptron trong báo cáo `03_Multiclass_Perceptron` có k
 - Đầu ra 1 phụ trách `Iris-versicolor`.
 - Đầu ra 2 phụ trách `Iris-virginica`.
 - Mô hình chọn lớp có điểm số lớn nhất bằng `argmax`.
+- Mô hình không dùng Softmax để chọn lớp và không dùng Cross-Entropy Loss để huấn luyện.
 - Khi dự đoán sai, trọng số của lớp đúng được tăng lên, trọng số của lớp dự đoán sai bị giảm xuống.
 
 Mô hình này không dùng Softmax để huấn luyện như Logistic Regression. Softmax trong file Perceptron chỉ dùng để quy đổi điểm số thành dạng confidence dễ xem khi lưu kết quả.
@@ -100,6 +121,7 @@ CNN_Cau2/
 ├── 01_Neural_Network/
 │   ├── cau2_neural_network.py
 │   ├── Cau2_NeuralNetwork_BaoCao.md
+│   ├── nn_architecture_v3.png
 │   ├── nn_predictions.csv
 │   ├── nn_loss.png
 │   ├── nn_confusion_matrix.png
@@ -107,6 +129,7 @@ CNN_Cau2/
 ├── 02_Softmax_Logistic_Regression/
 │   ├── cau2_softmax_logistic.py
 │   ├── Cau2_SoftmaxLogistic_BaoCao.md
+│   ├── softmax_architecture_v3.png
 │   ├── softmax_predictions.csv
 │   ├── softmax_loss.png
 │   ├── softmax_confusion_matrix.png
@@ -114,6 +137,7 @@ CNN_Cau2/
 └── 03_Multiclass_Perceptron/
     ├── cau2_multiclass_perceptron.py
     ├── Cau2_Perceptron_BaoCao.md
+    ├── perceptron_architecture_v3.png
     ├── perceptron_predictions.csv
     ├── perceptron_mistakes.png
     ├── perceptron_confusion_matrix.png

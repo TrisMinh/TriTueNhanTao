@@ -32,12 +32,13 @@ cau2_multiclass_perceptron.py
 Perceptron là mô hình phân loại tuyến tính. Với mỗi mẫu dữ liệu `x`, mô hình tính điểm cho từng lớp:
 
 ```text
-score_c = W_c . x
+score_c = W_c . x + b_c
 ```
 
 Trong đó:
 
 - `W_c`: vector trọng số của lớp `c`
+- `b_c`: bias của lớp `c`
 - `x`: vector đặc trưng của mẫu
 - `score_c`: điểm số của mẫu đối với lớp `c`
 
@@ -60,6 +61,13 @@ Nếu dự đoán sai:
 ```text
 W_true = W_true + learning_rate * x
 W_pred = W_pred - learning_rate * x
+```
+
+Nếu tách riêng bias, bias của lớp đúng được tăng lên và bias của lớp dự đoán sai bị giảm xuống:
+
+```text
+b_true = b_true + learning_rate
+b_pred = b_pred - learning_rate
 ```
 
 Mục tiêu của quá trình học là giảm số mẫu phân loại sai qua các epoch.
@@ -95,7 +103,7 @@ Kiến trúc:
 
 Hình minh họa kiến trúc mô hình:
 
-![Kiến trúc Multiclass Perceptron 4-3](perceptron_architecture_v2.png)
+![Kiến trúc Multiclass Perceptron 4-3](perceptron_architecture_v3.png)
 
 Ý nghĩa hình:
 
@@ -103,6 +111,7 @@ Hình minh họa kiến trúc mô hình:
 - Với mỗi lớp, mô hình tính một điểm số riêng.
 - Ba điểm số tương ứng với 3 loài hoa: Setosa, Versicolor, Virginica.
 - Mô hình chọn lớp có điểm số lớn nhất bằng `argmax`.
+- Mô hình không dùng Softmax để chọn lớp và không dùng Cross-Entropy Loss để huấn luyện.
 - Khi dự đoán sai, trọng số của lớp đúng được tăng lên và trọng số của lớp dự đoán sai bị giảm xuống.
 
 Trong đó:
@@ -111,6 +120,54 @@ Trong đó:
 |---|---:|---|
 | Input | 4 | Nhận 4 đặc trưng của hoa |
 | Output score | 3 | Tính điểm cho 3 lớp |
+
+### Quy trình phân loại
+
+1. Tiền xử lý dữ liệu:
+
+- Đọc dữ liệu từ file `input_2.csv`.
+- Lấy 4 cột đầu làm đặc trưng đầu vào `X`.
+- Lấy cột cuối làm nhãn thật `y`.
+- Chuẩn hóa dữ liệu đầu vào bằng cách trừ trung bình và chia độ lệch chuẩn.
+
+2. Mã hóa nhãn:
+
+- Chuyển tên loài hoa thành số nguyên:
+
+```text
+Iris-setosa     -> 0
+Iris-versicolor -> 1
+Iris-virginica  -> 2
+```
+
+3. Mô hình phân loại:
+
+- Sử dụng Multiclass Perceptron có kiến trúc `4 -> 3`.
+- Mỗi lớp có một vector trọng số riêng.
+- Với mỗi mẫu đầu vào, mô hình tính 3 điểm số tương ứng với 3 lớp.
+- Mô hình chọn lớp có điểm số lớn nhất bằng `argmax`.
+
+4. Huấn luyện mô hình:
+
+- Khởi tạo trọng số của 3 lớp bằng 0.
+- Lặp qua nhiều epoch:
+- Tính điểm số cho từng lớp.
+- Chọn lớp dự đoán bằng `argmax`.
+- Nếu dự đoán đúng thì không cập nhật.
+- Nếu dự đoán sai thì tăng trọng số của lớp đúng và giảm trọng số của lớp dự đoán sai.
+- Ghi lại số mẫu phân loại sai qua các epoch.
+
+5. Dự đoán:
+
+- Đọc 30 mẫu cần dự đoán từ file `output_2.csv`.
+- Chuẩn hóa 30 mẫu này bằng mean và std của tập huấn luyện.
+- Tính điểm số của 3 lớp bằng mô hình đã huấn luyện.
+- Chọn lớp có điểm số lớn nhất bằng `argmax`.
+
+6. Kết quả:
+
+- Chuyển nhãn số dự đoán về tên loài hoa tương ứng.
+- Lưu kết quả dự đoán vào file `perceptron_predictions.csv`.
 
 Nếu diễn giải theo dạng neuron, mô hình có 4 neuron đầu vào và 3 neuron đầu ra:
 

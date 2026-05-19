@@ -39,48 +39,61 @@ Iris-versicolor
 Iris-virginica
 ```
 
-nên Logistic Regression nhị phân thông thường không đủ. Em dùng **Softmax Regression**, còn gọi là Logistic Regression đa lớp.
-
-Mô hình tính điểm cho 3 lớp:
+nên đây là bài toán phân loại nhiều lớp. Hàm mất mát được sử dụng là:
 
 ```text
-Z = XW + b
+Cross-Entropy Loss
 ```
 
-Sau đó dùng hàm Softmax để chuyển điểm số thành xác suất:
+Hàm Cross-Entropy đo mức độ sai lệch giữa nhãn thật và xác suất dự đoán của mô hình. Trong bài này, nhãn thật được biểu diễn dưới dạng one-hot.
+
+Ví dụ, nếu mẫu hoa thuộc lớp `Iris-setosa` thì nhãn thật là:
 
 ```text
-p_i = exp(z_i) / sum(exp(z_j))
+y = [1, 0, 0]
 ```
 
-Trong đó:
-
-- `z_i`: điểm số của lớp thứ `i`
-- `p_i`: xác suất mẫu thuộc lớp thứ `i`
-- Tổng xác suất của 3 lớp bằng 1
-
-Hàm mất mát được dùng là **Cross-Entropy Loss**:
+Nếu mô hình dự đoán xác suất:
 
 ```text
-Loss = -1/m * sum(y * log(y_hat))
+y_hat = [0.92, 0.06, 0.02]
+```
+
+thì loss nhỏ vì xác suất của lớp đúng cao. Nếu mô hình dự đoán:
+
+```text
+y_hat = [0.20, 0.70, 0.10]
+```
+
+thì loss lớn hơn vì xác suất của lớp đúng thấp.
+
+Với một mẫu dữ liệu, Cross-Entropy Loss được tính bằng:
+
+```text
+L = -sum(y_i * log(y_hat_i))
+```
+
+Với toàn bộ `m` mẫu huấn luyện, chương trình lấy trung bình loss của các mẫu:
+
+```text
+Loss = -1/m * sum(L_k)
+     = -1/m * sum(sum(y_ki * log(y_hat_ki)))
 ```
 
 Trong đó:
 
 - `m`: số mẫu huấn luyện
+- `k`: chỉ số mẫu
+- `i`: chỉ số lớp
 - `y`: nhãn thật ở dạng one-hot
-- `y_hat`: xác suất dự đoán sau Softmax
+- `y_hat`: xác suất dự đoán của mô hình
 - Loss càng nhỏ thì mô hình phân loại càng tốt
+
+Mục tiêu huấn luyện là tìm trọng số `W` và bias `b` sao cho Cross-Entropy Loss trung bình trên tập huấn luyện là nhỏ nhất.
 
 ### Trả lời: Dán code của hàm loss
 
 ```python
-def softmax(Z):
-    shifted = Z - np.max(Z, axis=1, keepdims=True)
-    exp_scores = np.exp(shifted)
-    return exp_scores / np.sum(exp_scores, axis=1, keepdims=True)
-
-
 def cross_entropy_loss(y_true_one_hot, y_pred_proba):
     eps = 1e-12
     clipped = np.clip(y_pred_proba, eps, 1 - eps)
@@ -89,7 +102,6 @@ def cross_entropy_loss(y_true_one_hot, y_pred_proba):
 
 Giải thích:
 
-- `shifted = Z - max(Z)` giúp tránh tràn số khi tính `exp`.
 - `np.clip` tránh lỗi `log(0)`.
 - `np.mean(...)` lấy loss trung bình trên toàn bộ tập huấn luyện.
 
@@ -109,14 +121,14 @@ Kiến trúc:
 
 Hình minh họa kiến trúc mô hình:
 
-![Kiến trúc Softmax Logistic Regression 4-3](softmax_logistic_architecture.png)
+![Kiến trúc Softmax Logistic Regression 4-3](softmax_architecture_v3.png)
 
 Ý nghĩa hình:
 
 - Mô hình nhận 4 đặc trưng đầu vào của hoa Iris.
 - Các đặc trưng được đưa qua một tầng tuyến tính để tính điểm số cho 3 lớp.
 - Không có tầng ẩn, nên đây là mô hình tuyến tính.
-- Softmax chuyển 3 điểm số thành 3 xác suất.
+- Softmax là hàm kích hoạt ở tầng đầu ra, dùng để chuyển 3 điểm số thành 3 xác suất.
 - Nhãn dự đoán là lớp có xác suất lớn nhất.
 
 Trong đó:
@@ -125,6 +137,80 @@ Trong đó:
 |---|---:|---|
 | Input | 4 | Nhận 4 đặc trưng hoa Iris |
 | Output | 3 | Tính điểm cho 3 loài hoa |
+
+Hàm kích hoạt ở tầng đầu ra:
+
+```text
+Softmax
+```
+
+Mô hình tính điểm tuyến tính cho 3 lớp:
+
+```text
+Z = XW + b
+```
+
+Sau đó dùng Softmax để chuyển điểm số thành xác suất:
+
+```text
+p_i = exp(z_i) / sum(exp(z_j))
+```
+
+Trong đó:
+
+- `z_i`: điểm số của lớp thứ `i`.
+- `p_i`: xác suất mẫu thuộc lớp thứ `i`.
+- Tổng xác suất của 3 lớp bằng 1.
+
+### Quy trình phân loại
+
+1. Tiền xử lý dữ liệu:
+
+- Đọc dữ liệu từ file `input_2.csv`.
+- Lấy 4 cột đầu làm đặc trưng đầu vào `X`.
+- Lấy cột cuối làm nhãn thật `y`.
+- Nếu bật data augmentation, tạo thêm mẫu huấn luyện bằng cách cộng nhiễu Gaussian nhỏ vào 4 đặc trưng.
+- Chuẩn hóa dữ liệu đầu vào bằng cách trừ trung bình và chia độ lệch chuẩn.
+
+2. Mã hóa nhãn:
+
+- Chuyển tên loài hoa thành số nguyên:
+
+```text
+Iris-setosa     -> 0
+Iris-versicolor -> 1
+Iris-virginica  -> 2
+```
+
+- Chuyển nhãn số sang dạng one-hot để tính Cross-Entropy Loss.
+
+3. Mô hình phân loại:
+
+- Sử dụng Softmax Logistic Regression có kiến trúc `4 -> 3`.
+- Mỗi mẫu đầu vào được đưa qua phép tuyến tính `Z = XW + b` để tạo 3 điểm số.
+- Hàm Softmax chuyển 3 điểm số thành 3 xác suất tương ứng với 3 lớp.
+
+4. Huấn luyện mô hình:
+
+- Khởi tạo trọng số `W` bằng 0.
+- Lặp qua nhiều epoch:
+- Tính logits `Z`.
+- Tính xác suất dự đoán bằng Softmax.
+- Tính Cross-Entropy Loss giữa xác suất dự đoán và nhãn thật.
+- Tính gradient.
+- Cập nhật `W` bằng gradient descent để giảm loss.
+
+5. Dự đoán:
+
+- Đọc 30 mẫu cần dự đoán từ file `output_2.csv`.
+- Chuẩn hóa 30 mẫu này bằng mean và std của tập huấn luyện.
+- Đưa dữ liệu qua mô hình đã huấn luyện để lấy xác suất của 3 lớp.
+- Chọn lớp có xác suất lớn nhất bằng `argmax`.
+
+6. Kết quả:
+
+- Chuyển nhãn số dự đoán về tên loài hoa tương ứng.
+- Lưu kết quả dự đoán vào file `softmax_predictions.csv`.
 
 Nếu xem theo cách diễn đạt bằng neuron, mô hình có 4 neuron đầu vào và 3 neuron đầu ra:
 
